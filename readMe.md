@@ -62,3 +62,20 @@ Start the Application
 Bash
 # From the root directory
 npm run dev
+
+# Deployment Architechture
+React (Vite)
+      ↓
+Express Backend
+      ↓
+Neon PostgreSQL
+
+Authentication → Clerk
+AI → Gemini
+Image Processing → ClipDrop
+Media Storage → Cloudinary
+
+Deployment:
+AWS EC2
+Docker
+Docker Compose
