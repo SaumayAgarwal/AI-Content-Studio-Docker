@@ -1,0 +1,19 @@
+services:
+  backend:
+    build:
+      context: ./Service
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./Service/.env
+
+  frontend:
+    build:
+      context: ./Quick-Gen/client
+      args:
+        VITE_CLERK_PUBLISHABLE_KEY: pk_test_Y2hhcm1pbmctc25pcGUtMTkuY2xlcmsuYWNjb3VudHMuZGV2JA
+        VITE_BASE_URL: http://localhost:8080
+    ports:
+      - "5001:5001"
+    depends_on:
+      - backend
