@@ -33,7 +33,7 @@ const ReviewResume = () => {
       const formData = new FormData()
       formData.append('resume', image)
 
-      const { data } = await axios.post('/api/ai/review-resume', formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const { data } = await axios.post('/ai/review-resume', formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
 
       if(data.success){
         setContent(data.content)

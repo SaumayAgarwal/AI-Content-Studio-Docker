@@ -25,7 +25,7 @@ const RemoveBackground = () => {
       const formData = new FormData()
       formData.append('image', image)
 
-      const { data } = await axios.post('/api/ai/remove-image-background', formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const { data } = await axios.post('/ai/remove-image-background', formData, {headers: {Authorization: `Bearer ${await getToken()}`}})
 
       if(data.success){
         setContent(data.content)

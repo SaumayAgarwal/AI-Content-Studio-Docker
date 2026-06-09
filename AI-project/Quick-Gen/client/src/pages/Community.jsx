@@ -16,7 +16,7 @@ const Community = () => {
 
   const fetchCreations= async ()=>{
     try {
-      const { data } = await axios.get('/api/ai/get-published-creations', {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const { data } = await axios.get('/ai/get-published-creations', {headers: {Authorization: `Bearer ${await getToken()}`}})
 
       if(data.success){
         setCreations(data.creations)

@@ -28,7 +28,7 @@ const WriteArticle = () => {
       setLoading(true)
       const prompt = `write an article about ${topic} in ${selectedLength.text}`
       
-      const {data} = await axios.post('/api/ai/generate-article', {prompt, length:selectedLength.length}, {
+      const {data} = await axios.post('/ai/generate-article', {prompt, length:selectedLength.length}, {
         headers: {Authorization: `Bearer ${await getToken()}`}
       })
 

@@ -1,4 +1,5 @@
-FROM node:20
+# ---------- Build Stage ----------
+FROM node:20 AS builder
 
 WORKDIR /usr/src/app
 
@@ -11,13 +12,19 @@ COPY . .
 ARG VITE_CLERK_PUBLISHABLE_KEY
 ARG VITE_BASE_URL
 
-ENV VITE_CLERK_PUBLISHABLE_KEY=pk_test_Y2hhcm1pbmctc25pcGUtMTkuY2xlcmsuYWNjb3VudHMuZGV2JA
-ENV VITE_BASE_URL=http://localhost:8080
+ENV VITE_CLERK_PUBLISHABLE_KEY=$VITE_CLERK_PUBLISHABLE_KEY
+ENV VITE_BASE_URL=$VITE_BASE_URL
 
 RUN npm run build
 
-RUN npm install -g serve
 
-EXPOSE 5001
+# ---------- Production Stage ----------
+FROM nginx:alpine
 
-CMD ["serve", "-s", "dist", "-l", "5001"]
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+
+COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -29,7 +29,7 @@ const BlogTitles = () => {
       setLoading(true)
       const prompt = `Generate a blog title for thekeyword ${topic} in the category ${selectedCategory}`
 
-      const { data } = await axios.post('/api/ai/generate-blog-title', {prompt}, {headers: {Authorization: `Bearer ${await getToken()}`}})
+      const { data } = await axios.post('/ai/generate-blog-title', {prompt}, {headers: {Authorization: `Bearer ${await getToken()}`}})
 
       if(data.success){
         setContent(data.content)
