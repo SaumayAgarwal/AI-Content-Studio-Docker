@@ -1,0 +1,66 @@
+name: Deploy AI Content Studio
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Frontend Checks
+      - name: Setup Node for Frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Frontend Dependencies
+        working-directory: ./Quick-Gen/client
+        run: npm install
+
+      - name: Build Frontend
+        working-directory: ./Quick-Gen/client
+        run: npm run build
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}
+          VITE_BASE_URL: ""
+
+      # Backend Checks
+      - name: Install Backend Dependencies
+        working-directory: ./Service
+        run: npm install
+
+      # Docker Build Validation
+      - name: Build Backend Docker Image
+        run: docker build -t backend-test ./Service
+
+      - name: Build Frontend Docker Image
+        run: |
+          docker build \
+          --build-arg VITE_CLERK_PUBLISHABLE_KEY=${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }} \
+          --build-arg VITE_BASE_URL="" \
+          -t frontend-test ./Quick-Gen/client
+
+  deploy:
+    needs: ci
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ${{ secrets.EC2_DEPLOY_PATH }}
+
+            git fetch origin
+            git reset --hard origin/main
+
+            docker compose up --build -d
